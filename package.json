@@ -1,5 +1,5 @@
 {
-  "name": "com.xray.panel", 
+  "name": "com.xray.panel",
   "private": true,
   "version": "0.0.1",
   "type": "module",
@@ -14,11 +14,11 @@
     "delsymlink": "cross-env BOLT_ACTION=delsymlink vite"
   },
   "dependencies": {
+    "@xyflow/react": "^12.11.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
   "devDependencies": {
-    "source-map": "^0.7.4",
     "@babel/core": "^7.19.0",
     "@babel/plugin-proposal-class-properties": "^7.16.0",
     "@babel/plugin-proposal-object-rest-spread": "^7.16.0",
@@ -28,9 +28,6 @@
     "@babel/preset-react": "^7.27.1",
     "@babel/preset-typescript": "^7.16.0",
     "@babel/runtime": "^7.16.3",
-    "babel-plugin-react-require": "^4.0.3",
-    "babel-plugin-transform-scss": "^1.2.0",
-    "babel-preset-env": "^1.7.0",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-commonjs": "^28.0.3",
     "@rollup/plugin-image": "^3.0.3",
@@ -43,6 +40,9 @@
     "@types/react-dom": "^19.1.6",
     "@types/trusted-types": "^2.0.2",
     "@vitejs/plugin-react": "^4.5.1",
+    "babel-plugin-react-require": "^4.0.3",
+    "babel-plugin-transform-scss": "^1.2.0",
+    "babel-preset-env": "^1.7.0",
     "core-js": "3",
     "cross-env": "^7.0.3",
     "fs-extra": "^10.0.0",
@@ -52,6 +52,7 @@
     "rollup-plugin-node-copy": "^1.0.4",
     "rollup-plugin-scss": "^4.0.1",
     "sass": "^1.89.1",
+    "source-map": "^0.7.4",
     "types-for-adobe": "^7.2.3",
     "types-for-adobe-extras": "^0.0.9",
     "typescript": "^5.8.3",

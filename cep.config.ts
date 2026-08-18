@@ -3,17 +3,15 @@ import { version } from "./package.json";
 
 const config: CEP_Config = {
   version,
-  id: "com.xray.panel", 
-  displayName: "X-Ray", 
+  id: "com.xray.panel",
+  displayName: "X-Ray",
   symlink: "local",
   port: 3000,
   servePort: 5000,
-  startingDebugPort: 8860,
+  startingDebugPort: 8861,
   extensionManifestVersion: 6.0,
   requiredRuntimeVersion: 9.0,
-  hosts: [
-    { name: "AEFT", version: "[0.0,99.9]" }, 
-  ],
+  hosts: [{ name: "AEFT", version: "[0.0,99.9]" }],
 
   type: "Panel",
   iconDarkNormal: "./src/assets/light-icon.png",
@@ -28,7 +26,7 @@ const config: CEP_Config = {
     {
       mainPath: "./main/index.html",
       name: "main",
-      panelDisplayName: "X-Ray", 
+      panelDisplayName: "X-Ray",
       autoVisible: true,
       width: 600,
       height: 650,
