@@ -1,6 +1,5 @@
 import "./main.scss";
 import { useState, useCallback, useEffect } from "react";
-import { evalTS } from "../lib/utils/bolt";
 import {
   ReactFlow,
   applyNodeChanges,
@@ -8,43 +7,61 @@ import {
   addEdge,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
+import Test from "../utils/test";
+import { evalTS } from "../lib/utils/bolt";
+import calculateLayout from "../utils/calculateLayout";
+import { GraphNode, GraphEdge } from "../../shared/types";
 
 const initialNodes = [
-  { id: "n1", position: { x: 0, y: 0 }, data: { label: "Node 1" } },
+  {
+    id: "n1",
+    position: { x: 0, y: 0 },
+    deletable: false,
+    data: { label: "Comp 1" },
+  },
   { id: "n2", position: { x: 0, y: 100 }, data: { label: "Node 2" } },
 ];
-const initialEdges = [{ id: "n1-n2", source: "n1", target: "n2" }];
+const initialEdges = [
+  {
+    id: "n1-n2",
+    deletable: false,
+    reconnectable: false,
+    source: "n1",
+    target: "n2",
+  },
+];
 
 export default function App() {
-  const [nodes, setNodes] = useState(initialNodes);
-  const [edges, setEdges] = useState(initialEdges);
+  const [nodes, setNodes] = useState<GraphNode[] | null>(null);
+  const [edges, setEdges] = useState<GraphEdge[] | null>(null);
+  const [error, setError] = useState<boolean>(false);
 
-  const onNodesChange = useCallback(
-    (changes) =>
-      setNodes((nodesSnapshot) => applyNodeChanges(changes, nodesSnapshot)),
-    [],
-  );
-  const onEdgesChange = useCallback(
-    (changes) =>
-      setEdges((edgesSnapshot) => applyEdgeChanges(changes, edgesSnapshot)),
-    [],
-  );
-  const onConnect = useCallback(
-    (params) => setEdges((edgesSnapshot) => addEdge(params, edgesSnapshot)),
-    [],
-  );
+  useEffect(() => {
+    async function getGraph() {
+      try {
+        const { nodes, edges } = await evalTS("createGraph");
+
+        setNodes(nodes);
+        setEdges(edges);
+      } catch (err) {
+        console.error("Failed to retrieve graph: ", err);
+        setError(true);
+      }
+    }
+
+    getGraph();
+  }, []);
+
+  if (nodes) {
+    const { nodes, edges } = calculateLayout(nodes, edges);
+
+    setNodes(nodes);
+    setEdges(edges);
+  }
 
   return (
     <div style={{ width: "100vw", height: "100vh" }} className="app">
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
-        fitView
-        proOptions={{ hideAttribution: true }}
-      />
+      {nodes && <h1>{nodes[1].id}</h1>}
     </div>
   );
 }
