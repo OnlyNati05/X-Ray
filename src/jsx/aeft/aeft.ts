@@ -1,4 +1,4 @@
-import createGraph from "./project/graphTraversal";
-import compName from "./test/compName";
+import { initGraph } from "./project/initGraph";
+import { compName } from "./test/compName";
 
-export { compName, createGraph };
+export { compName, initGraph };

@@ -7,29 +7,9 @@ import {
   addEdge,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import Test from "../utils/test";
 import { evalTS } from "../lib/utils/bolt";
 import calculateLayout from "../utils/calculateLayout";
-import { GraphNode, GraphEdge } from "../../shared/types";
-
-const initialNodes = [
-  {
-    id: "n1",
-    position: { x: 0, y: 0 },
-    deletable: false,
-    data: { label: "Comp 1" },
-  },
-  { id: "n2", position: { x: 0, y: 100 }, data: { label: "Node 2" } },
-];
-const initialEdges = [
-  {
-    id: "n1-n2",
-    deletable: false,
-    reconnectable: false,
-    source: "n1",
-    target: "n2",
-  },
-];
+import type { GraphNode, GraphEdge, Graph } from "../../shared/types";
 
 export default function App() {
   const [nodes, setNodes] = useState<GraphNode[] | null>(null);
@@ -39,10 +19,14 @@ export default function App() {
   useEffect(() => {
     async function getGraph() {
       try {
-        const { nodes, edges } = await evalTS("createGraph");
+        const graph: Graph | null = await evalTS("initGraph");
 
-        setNodes(nodes);
-        setEdges(edges);
+        if (graph) {
+          const { nodes, edges } = calculateLayout(graph.nodes, graph.edges);
+
+          setNodes(nodes);
+          setEdges(edges);
+        }
       } catch (err) {
         console.error("Failed to retrieve graph: ", err);
         setError(true);
@@ -52,16 +36,20 @@ export default function App() {
     getGraph();
   }, []);
 
-  if (nodes) {
-    const { nodes, edges } = calculateLayout(nodes, edges);
-
-    setNodes(nodes);
-    setEdges(edges);
-  }
-
   return (
     <div style={{ width: "100vw", height: "100vh" }} className="app">
-      {nodes && <h1>{nodes[1].id}</h1>}
+      {error ? (
+        <h1>An error occured</h1>
+      ) : nodes ? (
+        <>
+          <h1>{nodes[0].data.label}</h1>
+        </>
+      ) : (
+        <h1>
+          Please click on an item from your project panel or highlight the
+          timeline before opening X-Ray
+        </h1>
+      )}
     </div>
   );
 }
