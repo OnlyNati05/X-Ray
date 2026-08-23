@@ -1,3 +1,5 @@
+import { debug } from "../../utils/debugMessage";
+
 const dummyNodes = [
   {
     id: "n1",
@@ -24,6 +26,7 @@ const dummyEdges = [
 
 export const buildGraph = () => {
   const coinFlip = Math.round(Math.random());
+  debug(app.project.activeItem?.name);
 
   if (coinFlip) {
     return null;

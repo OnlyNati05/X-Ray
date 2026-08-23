@@ -5,6 +5,7 @@ import babel from "@rollup/plugin-babel";
 import { jsxInclude, jsxBin, jsxPonyfill } from "vite-cep-plugin";
 import { CEP_Config } from "vite-cep-plugin";
 import json from "@rollup/plugin-json";
+import replace from "@rollup/plugin-replace";
 import path from "path";
 
 const GLOBAL_THIS = "thisObj";
@@ -16,6 +17,7 @@ export const extendscriptConfig = (
   extensions: string[],
   isProduction: boolean,
   isPackage: boolean,
+  debugMode: boolean,
 ) => {
   console.log(outPath);
   const config: RollupOptions = {
@@ -28,6 +30,12 @@ export const extendscriptConfig = (
         : cepConfig.build?.sourceMap,
     },
     plugins: [
+      replace({
+        preventAssignment: true,
+        values: {
+          __DEBUG_MODE__: JSON.stringify(debugMode),
+        },
+      }),
       json(),
       nodeResolve({
         extensions,

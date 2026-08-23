@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 
 import react from "@vitejs/plugin-react"; 
 
@@ -18,6 +18,9 @@ const outDir = path.resolve(__dirname, "dist", cepDist);
 
 const debugReact = process.env.DEBUG_REACT === "true";
 const isProduction = process.env.NODE_ENV === "production";
+const mode = isProduction ? "production" : "development";
+const env = loadEnv(mode, __dirname, "");
+const debugMode = env.DEBUG_MODE === "true";
 const isMetaPackage = process.env.ZIP_PACKAGE === "true";
 const isPackage = process.env.ZXP_PACKAGE === "true" || isMetaPackage;
 const isServe = process.env.SERVE_PANEL === "true";
@@ -95,4 +98,5 @@ extendscriptConfig(
   extensions,
   isProduction,
   isPackage,
+  debugMode,
 );
