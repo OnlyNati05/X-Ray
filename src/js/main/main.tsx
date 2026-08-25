@@ -45,10 +45,7 @@ export default function App() {
           <h1>{nodes[0].data.label}</h1>
         </>
       ) : (
-        <h1>
-          Please click on an item from your project panel or highlight the
-          timeline before opening X-Ray
-        </h1>
+        <h1>Please click on an layer in your timeline before opening X-Ray</h1>
       )}
     </div>
   );

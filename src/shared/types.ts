@@ -7,6 +7,7 @@ export interface GraphNode {
   deletable: boolean;
   data: {
     label: string;
+    type: string;
   };
 }
 export interface GraphEdge {
