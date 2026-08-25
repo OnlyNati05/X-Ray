@@ -1,19 +1,47 @@
 import "./main.scss";
 import { useState, useCallback, useEffect } from "react";
 import {
+  Background,
   ReactFlow,
-  applyNodeChanges,
-  applyEdgeChanges,
   addEdge,
+  Connection,
+  ConnectionLineType,
+  Panel,
+  useNodesState,
+  useEdgesState,
+  useReactFlow,
+  MarkerType,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { evalTS } from "../lib/utils/bolt";
-import calculateLayout from "../utils/calculateLayout";
+import calculateLayout, {
+  type LayoutDirection,
+} from "../utils/calculateLayout";
 import type { GraphNode, GraphEdge, Graph } from "../../shared/types";
+import CustomGraphNode from "../components/CustomGraphNode";
+
+const nodeTypes = { customGraphNode: CustomGraphNode };
+const customNodeType = "customGraphNode";
+
+function FitViewButton() {
+  const { fitView } = useReactFlow();
+
+  return (
+    <button
+      className="xy-theme__button"
+      onClick={() =>
+        fitView({ padding: 0.2, duration: 300, interpolate: "smooth" })
+      }
+    >
+      fit graph
+    </button>
+  );
+}
 
 export default function App() {
-  const [nodes, setNodes] = useState<GraphNode[] | null>(null);
-  const [edges, setEdges] = useState<GraphEdge[] | null>(null);
+  const [nodes, setNodes, onNodesChange] = useNodesState<GraphNode>([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<GraphEdge>([]);
+  const [hasGraph, setHasGraph] = useState(false);
   const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
@@ -22,10 +50,17 @@ export default function App() {
         const graph: Graph | null = await evalTS("initGraph");
 
         if (graph) {
-          const { nodes, edges } = calculateLayout(graph.nodes, graph.edges);
+          const { nodes: layoutedNodes, edges: layoutedEdges } =
+            calculateLayout(graph.nodes, graph.edges, "TB");
 
-          setNodes(nodes);
-          setEdges(edges);
+          setNodes(
+            layoutedNodes.map((node) => ({
+              ...node,
+              type: customNodeType,
+            })),
+          );
+          setEdges(layoutedEdges);
+          setHasGraph(true);
         }
       } catch (err) {
         console.error("Failed to retrieve graph: ", err);
@@ -36,14 +71,61 @@ export default function App() {
     getGraph();
   }, []);
 
+  const onConnect = useCallback(
+    (params: Connection) => setEdges((eds) => addEdge(params, eds)),
+    [],
+  );
+  const onLayout = useCallback(
+    (direction: LayoutDirection) => {
+      const { nodes: layoutedNodes, edges: layoutedEdges } = calculateLayout(
+        nodes,
+        edges,
+        direction,
+      );
+
+      setNodes([...layoutedNodes]);
+      setEdges([...layoutedEdges]);
+    },
+    [nodes, edges],
+  );
+
   return (
     <div style={{ width: "100vw", height: "100vh" }} className="app">
       {error ? (
         <h1>An error occured</h1>
-      ) : nodes ? (
-        <>
-          <h1>{nodes[0].data.label}</h1>
-        </>
+      ) : hasGraph ? (
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onConnect={onConnect}
+          nodeTypes={nodeTypes}
+          connectionLineType={ConnectionLineType.SmoothStep}
+          proOptions={{ hideAttribution: true }}
+          fitView
+          colorMode="system"
+          defaultEdgeOptions={{
+            type: "smoothstep",
+            animated: true,
+            markerEnd: {
+              type: MarkerType.ArrowClosed,
+              width: 20,
+              height: 20,
+            },
+          }}
+        >
+          <Panel position="top-right">
+            <FitViewButton />
+            <button className="xy-theme__button" onClick={() => onLayout("TB")}>
+              vertical layout
+            </button>
+            <button className="xy-theme__button" onClick={() => onLayout("LR")}>
+              horizontal layout
+            </button>
+          </Panel>
+          <Background bgColor="#272727" color="#4d4d4d" />
+        </ReactFlow>
       ) : (
         <h1>Please click on an layer in your timeline before opening X-Ray</h1>
       )}

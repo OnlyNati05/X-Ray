@@ -1,1 +1,26 @@
 @use "../variables.scss" as *;
+
+.custom-graph-node {
+  min-width: 140px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #353535;
+  color: #fff;
+}
+
+.custom-graph-node__name {
+  font-weight: 600;
+}
+
+.custom-graph-node__type {
+  margin-top: 3px;
+  color: #bdbdbd;
+  font-size: 0.85em;
+}
+
+.custom-graph-node .react-flow__handle {
+  width: 8px;
+  height: 8px;
+  border: 1px solid #3a3a3a;
+  background: #fff;
+}

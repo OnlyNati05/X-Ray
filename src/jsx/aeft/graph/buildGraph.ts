@@ -9,48 +9,50 @@ import { createNode, getLayerType } from "../utils/createNode";
 import { GraphEdge, GraphNode } from "../../../shared/types";
 import createEdge from "../utils/createEdge";
 
-let nodes: GraphNode[] = [];
-let edges: GraphEdge[] = [];
+type QueueEntry = {
+  comp: CompItem;
+  graphNodeId: string;
+};
 
 export const buildGraph = () => {
-  let nodes_queue = getRootComps();
+  const roots = getRootComps();
 
-  if (!nodes_queue) {
+  if (!roots) {
     return null;
   }
 
-  // Create the inital nodes from root composition(s)
-  for (let i = 0; i < nodes_queue.length; i++) {
-    nodes.push(createNode(nodes_queue[i]));
+  const nodes: GraphNode[] = [];
+  const edges: GraphEdge[] = [];
+  const queue: QueueEntry[] = [];
+
+  for (let i = 0; i < roots.length; i++) {
+    const rootNode = createNode(roots[i]);
+
+    nodes.push(rootNode);
+    queue.push({
+      comp: roots[i],
+      graphNodeId: rootNode.id,
+    });
   }
 
-  while (nodes_queue.length > 0) {
-    const item = nodes_queue.shift();
+  while (queue.length > 0) {
+    const current = queue.shift()!;
 
-    for (let i = 0; i < item!.numLayers; i++) {
-      const layer = item!.layer(i + 1);
+    for (let i = 1; i <= current.comp.numLayers; i++) {
+      const layer = current.comp.layer(i);
       const childNode = createNode(layer);
+
       nodes.push(childNode);
+      edges.push(createEdge(current.graphNodeId, childNode.id));
 
-      // Connect the current node to the child node
-      const parent_id =
-        String(item instanceof Layer ? getLayerType(item) : item!.typeName) +
-        "-" +
-        String(item!.id);
-
-      edges.push(createEdge(parent_id, childNode.id));
-
-      // If the child layer is a composition push it to the queue
-      if (layer instanceof AVLayer) {
-        const source = layer.source;
-
-        if (source instanceof CompItem) {
-          nodes_queue.push(source);
-        }
+      if (layer instanceof AVLayer && layer.source instanceof CompItem) {
+        queue.push({
+          comp: layer.source,
+          graphNodeId: childNode.id,
+        });
       }
     }
   }
 
-  const graph = { nodes, edges };
-  return graph;
+  return { nodes, edges };
 };
