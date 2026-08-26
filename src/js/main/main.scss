@@ -1,14 +1,19 @@
 @use "../variables.scss" as *;
 
 .custom-graph-node {
-  min-width: 140px;
+  box-sizing: border-box;
+  width: 172px;
   padding: 10px 14px;
   border-radius: 10px;
   background: #353535;
   color: #fff;
+  cursor: default;
 }
 
 .custom-graph-node__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-weight: 600;
 }
 
@@ -22,5 +27,13 @@
   width: 8px;
   height: 8px;
   border: 1px solid #3a3a3a;
-  background: #fff;
+  background: #ffffff;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.react-flow {
+  --xy-edge-stroke: #6e6e6e;
+  --xy-edge-stroke-selected: #ffffff;
+  --xy-edge-stroke-width: 1.5;
 }

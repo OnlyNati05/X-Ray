@@ -6,7 +6,6 @@ import {
   addEdge,
   Connection,
   ConnectionLineType,
-  Panel,
   useNodesState,
   useEdgesState,
   useReactFlow,
@@ -19,6 +18,7 @@ import calculateLayout, {
 } from "../utils/calculateLayout";
 import type { GraphNode, GraphEdge, Graph } from "../../shared/types";
 import CustomGraphNode from "../components/CustomGraphNode";
+import { LayoutControls } from "../components/LayoutControls";
 
 const nodeTypes = { customGraphNode: CustomGraphNode };
 const customNodeType = "customGraphNode";
@@ -115,15 +115,7 @@ export default function App() {
             },
           }}
         >
-          <Panel position="top-right">
-            <FitViewButton />
-            <button className="xy-theme__button" onClick={() => onLayout("TB")}>
-              vertical layout
-            </button>
-            <button className="xy-theme__button" onClick={() => onLayout("LR")}>
-              horizontal layout
-            </button>
-          </Panel>
+          <LayoutControls onLayout={onLayout} />
           <Background bgColor="#272727" color="#4d4d4d" />
         </ReactFlow>
       ) : (
