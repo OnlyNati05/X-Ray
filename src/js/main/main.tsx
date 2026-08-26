@@ -9,7 +9,10 @@ import {
   useNodesState,
   useEdgesState,
   useReactFlow,
+  useViewport,
   MarkerType,
+  MiniMap,
+  Panel,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { evalTS } from "../lib/utils/bolt";
@@ -19,22 +22,43 @@ import calculateLayout, {
 import type { GraphNode, GraphEdge, Graph } from "../../shared/types";
 import CustomGraphNode from "../components/CustomGraphNode";
 import { LayoutControls } from "../components/LayoutControls";
+import { ChevronDown, ChevronUp, ZoomIn, ZoomOut } from "lucide-react";
 
 const nodeTypes = { customGraphNode: CustomGraphNode };
 const customNodeType = "customGraphNode";
 
-function FitViewButton() {
-  const { fitView } = useReactFlow();
+function MiniMapZoomControls() {
+  const { zoomIn, zoomOut } = useReactFlow();
+  const { zoom } = useViewport();
 
   return (
-    <button
-      className="xy-theme__button"
-      onClick={() =>
-        fitView({ padding: 0.2, duration: 300, interpolate: "smooth" })
-      }
+    <Panel
+      position="bottom-right"
+      className="minimap-zoom-panel"
+      style={{ marginRight: 68, marginBottom: 108 }}
     >
-      fit graph
-    </button>
+      <button
+        type="button"
+        className="minimap-zoom-button"
+        onClick={() => zoomOut({ duration: 200 })}
+        aria-label="Zoom out"
+        title="Zoom out"
+      >
+        <ZoomOut aria-hidden="true" />
+      </button>
+      <span className="minimap-zoom-percentage">
+        {Math.round(zoom * 100)}%
+      </span>
+      <button
+        type="button"
+        className="minimap-zoom-button"
+        onClick={() => zoomIn({ duration: 200 })}
+        aria-label="Zoom in"
+        title="Zoom in"
+      >
+        <ZoomIn aria-hidden="true" />
+      </button>
+    </Panel>
   );
 }
 
@@ -43,6 +67,7 @@ export default function App() {
   const [edges, setEdges, onEdgesChange] = useEdgesState<GraphEdge>([]);
   const [hasGraph, setHasGraph] = useState(false);
   const [error, setError] = useState<boolean>(false);
+  const [isMiniMapVisible, setIsMiniMapVisible] = useState(true);
 
   useEffect(() => {
     async function getGraph() {
@@ -116,6 +141,45 @@ export default function App() {
           }}
         >
           <LayoutControls onLayout={onLayout} />
+          {isMiniMapVisible && (
+            <>
+              <MiniMap
+                nodeStrokeWidth={3}
+                zoomable
+                pannable
+                style={{ width: 180, height: 130, margin: 12 }}
+                bgColor="#4d4d4d"
+                nodeColor="#e2e9f7"
+              />
+              <MiniMapZoomControls />
+            </>
+          )}
+          <Panel
+            position="bottom-right"
+            className="minimap-toggle-panel"
+            style={
+              isMiniMapVisible
+                ? { marginRight: 18, marginBottom: 108 }
+                : { marginRight: 12, marginBottom: 12 }
+            }
+          >
+            <button
+              type="button"
+              className={`minimap-toggle${
+                isMiniMapVisible ? " minimap-toggle--open" : ""
+              }`}
+              onClick={() => setIsMiniMapVisible((visible) => !visible)}
+              aria-label={isMiniMapVisible ? "Hide minimap" : "Show minimap"}
+              title={isMiniMapVisible ? "Hide minimap" : "Show minimap"}
+            >
+              {isMiniMapVisible ? (
+                <ChevronDown aria-hidden="true" />
+              ) : (
+                <ChevronUp aria-hidden="true" />
+              )}
+            </button>
+          </Panel>
+
           <Background bgColor="#272727" color="#4d4d4d" />
         </ReactFlow>
       ) : (

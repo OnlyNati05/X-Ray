@@ -10,5 +10,6 @@ export default function createEdge(
     reconnectable: false,
     source: parent_id,
     target: child_id,
+    type: "default",
   };
 }

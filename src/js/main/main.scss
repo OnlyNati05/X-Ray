@@ -37,3 +37,79 @@
   --xy-edge-stroke-selected: #ffffff;
   --xy-edge-stroke-width: 1.5;
 }
+
+.minimap-toggle-panel {
+  z-index: 6;
+}
+
+.minimap-toggle {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  border-radius: 6px;
+  background: #353535;
+  color: #fff;
+  cursor: pointer;
+}
+
+.minimap-toggle:hover {
+  background: #454545;
+}
+
+.minimap-toggle--open {
+  background: transparent;
+}
+
+.minimap-toggle--open:hover {
+  background: #238636;
+}
+
+.minimap-toggle svg {
+  width: 18px;
+  height: 18px;
+}
+
+.minimap-zoom-panel {
+  z-index: 6;
+  display: flex;
+  width: 118px;
+  height: 28px;
+  align-items: center;
+  overflow: hidden;
+  border-radius: 6px;
+  background: #353535;
+  color: #fff;
+}
+
+.minimap-zoom-button {
+  display: grid;
+  width: 32px;
+  height: 28px;
+  flex: 0 0 32px;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.minimap-zoom-button:hover {
+  background: #454545;
+}
+
+.minimap-zoom-button svg {
+  width: 16px;
+  height: 16px;
+}
+
+.minimap-zoom-percentage {
+  flex: 1;
+  text-align: center;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  user-select: none;
+}
