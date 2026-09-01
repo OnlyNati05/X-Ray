@@ -16,6 +16,7 @@ export interface GraphEdge {
   target: string;
   deletable: boolean;
   reconnectable: boolean;
+  type: string;
 }
 export interface Graph {
   nodes: GraphNode[];

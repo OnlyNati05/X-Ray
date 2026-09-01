@@ -38,6 +38,104 @@
   --xy-edge-stroke-width: 1.5;
 }
 
+.graph-toolbar {
+  z-index: 6;
+  display: flex;
+  margin: 12px;
+  padding: 4px;
+  border-radius: 6px;
+  background: #4d4d4d;
+}
+
+.graph-toolbar__button {
+  position: relative;
+  display: grid;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+}
+
+.graph-toolbar__button:hover,
+.graph-toolbar__button:focus-visible {
+  background: #454545;
+}
+
+.graph-toolbar__button svg {
+  width: 19px;
+  height: 19px;
+}
+
+.graph-toolbar__horizontal-icon {
+  transform: rotate(90deg);
+}
+
+.graph-toolbar__button::after {
+  position: absolute;
+  bottom: calc(100% + 7px);
+  left: 50%;
+  z-index: 10;
+  padding: 4px 6px;
+  border-radius: 4px;
+  background: #242424;
+  color: #fff;
+  content: attr(data-tooltip);
+  font-size: 11px;
+  line-height: 1;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%);
+  transition: opacity 100ms ease;
+  white-space: nowrap;
+}
+
+.graph-toolbar__button:hover::after,
+.graph-toolbar__button:focus-visible::after {
+  opacity: 1;
+}
+
+.graph-toolbar__curve-control {
+  position: relative;
+}
+
+.graph-toolbar__curve-menu {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  display: none;
+  width: 36px;
+  padding-bottom: 6px;
+  border-radius: 6px;
+  background: #4d4d4d;
+}
+
+.graph-toolbar__curve-control:hover .graph-toolbar__curve-menu,
+.graph-toolbar__curve-control:focus-within .graph-toolbar__curve-menu {
+  display: flex;
+  flex-direction: column;
+}
+
+.graph-toolbar__curve-option--active {
+  background: #2563eb;
+}
+
+.graph-toolbar__curve-option--active:hover,
+.graph-toolbar__curve-option--active:focus-visible {
+  background: #2563eb;
+}
+
+.graph-toolbar__curve-option::after {
+  bottom: auto;
+  left: calc(100% + 7px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
 .minimap-toggle-panel {
   z-index: 6;
 }
@@ -64,7 +162,7 @@
 }
 
 .minimap-toggle--open:hover {
-  background: #238636;
+  background: #555555;
 }
 
 .minimap-toggle svg {
@@ -80,7 +178,6 @@
   align-items: center;
   overflow: hidden;
   border-radius: 6px;
-  background: #353535;
   color: #fff;
 }
 
@@ -98,7 +195,7 @@
 }
 
 .minimap-zoom-button:hover {
-  background: #454545;
+  background: #555555;
 }
 
 .minimap-zoom-button svg {

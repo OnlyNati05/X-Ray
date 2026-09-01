@@ -21,7 +21,10 @@ import calculateLayout, {
 } from "../utils/calculateLayout";
 import type { GraphNode, GraphEdge, Graph } from "../../shared/types";
 import CustomGraphNode from "../components/CustomGraphNode";
-import { LayoutControls } from "../components/LayoutControls";
+import {
+  LayoutControls,
+  type EdgeCurveType,
+} from "../components/LayoutControls";
 import { ChevronDown, ChevronUp, ZoomIn, ZoomOut } from "lucide-react";
 
 const nodeTypes = { customGraphNode: CustomGraphNode };
@@ -46,9 +49,7 @@ function MiniMapZoomControls() {
       >
         <ZoomOut aria-hidden="true" />
       </button>
-      <span className="minimap-zoom-percentage">
-        {Math.round(zoom * 100)}%
-      </span>
+      <span className="minimap-zoom-percentage">{Math.round(zoom * 100)}%</span>
       <button
         type="button"
         className="minimap-zoom-button"
@@ -68,7 +69,11 @@ export default function App() {
   const [hasGraph, setHasGraph] = useState(false);
   const [error, setError] = useState<boolean>(false);
   const [isMiniMapVisible, setIsMiniMapVisible] = useState(true);
+  const [curveType, setCurveType] = useState<EdgeCurveType>("smoothstep");
 
+  /* 
+    Retrieve the graph from backend then have degre calculate the layout.
+  */
   useEffect(() => {
     async function getGraph() {
       try {
@@ -84,7 +89,12 @@ export default function App() {
               type: customNodeType,
             })),
           );
-          setEdges(layoutedEdges);
+          setEdges(
+            layoutedEdges.map((edge) => ({
+              ...edge,
+              type: curveType,
+            })),
+          );
           setHasGraph(true);
         }
       } catch (err) {
@@ -113,6 +123,15 @@ export default function App() {
     },
     [nodes, edges],
   );
+  const onCurveTypeChange = useCallback((nextCurveType: EdgeCurveType) => {
+    setCurveType(nextCurveType);
+    setEdges((currentEdges) =>
+      currentEdges.map((edge) => ({
+        ...edge,
+        type: nextCurveType,
+      })),
+    );
+  }, []);
 
   return (
     <div style={{ width: "100vw", height: "100vh" }} className="app">
@@ -131,7 +150,7 @@ export default function App() {
           fitView
           colorMode="system"
           defaultEdgeOptions={{
-            type: "smoothstep",
+            type: curveType,
             animated: true,
             markerEnd: {
               type: MarkerType.ArrowClosed,
@@ -140,14 +159,23 @@ export default function App() {
             },
           }}
         >
-          <LayoutControls onLayout={onLayout} />
+          <LayoutControls
+            curveType={curveType}
+            onCurveTypeChange={onCurveTypeChange}
+            onLayout={onLayout}
+          />
           {isMiniMapVisible && (
             <>
               <MiniMap
                 nodeStrokeWidth={3}
                 zoomable
                 pannable
-                style={{ width: 180, height: 130, margin: 12 }}
+                style={{
+                  width: 180,
+                  height: 130,
+                  margin: 12,
+                  borderRadius: 6,
+                }}
                 bgColor="#4d4d4d"
                 nodeColor="#e2e9f7"
               />
