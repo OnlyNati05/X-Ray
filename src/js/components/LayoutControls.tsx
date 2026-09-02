@@ -3,7 +3,6 @@ import {
   LineDotRightHorizontal,
   Waypoints,
   Network,
-  Route,
   Scan,
   Spline,
   type LucideIcon,
@@ -32,22 +31,33 @@ const curveOptions: Array<{
   { icon: Waypoints, label: "Smooth Step", value: "smoothstep" },
 ];
 
+const curveIcons: Record<EdgeCurveType, LucideIcon> = {
+  default: Spline,
+  straight: LineDotRightHorizontal,
+  smoothstep: Waypoints,
+};
+
 export function LayoutControls({
   curveType,
   onCurveTypeChange,
   onLayout,
 }: LayoutControlsProps) {
   const { fitView } = useReactFlow();
-  const ActiveCurveIcon =
-    curveOptions.find((option) => option.value === curveType)?.icon ?? Spline;
+  const ActiveCurveIcon = curveIcons[curveType];
 
   const layoutAndFit = (direction: LayoutDirection) => {
     onLayout(direction);
 
+    /* 
+      fitView() needs to run on the next frame because onLayout() changes the state 
+      of the nodes and edges. Since state updates are queued to happen 
+      after the function finishes execution, fitView() would be operating 
+      on stale/old state.
+    */
     requestAnimationFrame(() => {
       fitView({
         padding: 0.2,
-        duration: 300,
+        duration: 600,
         interpolate: "smooth",
       });
     });
@@ -58,7 +68,7 @@ export function LayoutControls({
       <button
         type="button"
         className="graph-toolbar__button"
-        onClick={() => fitView({ padding: 0.2, duration: 300 })}
+        onClick={() => fitView({ padding: 0.2, duration: 600 })}
         aria-label="Center"
         data-tooltip="Center"
       >
@@ -102,7 +112,6 @@ export function LayoutControls({
               onClick={() => onCurveTypeChange(value)}
               aria-label={label}
               aria-pressed={curveType === value}
-              data-tooltip={label}
             >
               <Icon aria-hidden="true" />
             </button>

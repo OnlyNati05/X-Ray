@@ -30,34 +30,66 @@ import { ChevronDown, ChevronUp, ZoomIn, ZoomOut } from "lucide-react";
 const nodeTypes = { customGraphNode: CustomGraphNode };
 const customNodeType = "customGraphNode";
 
-function MiniMapZoomControls() {
+type MiniMapHeaderProps = {
+  isMiniMapVisible: boolean;
+  onToggle: () => void;
+};
+
+function MiniMapHeader({ isMiniMapVisible, onToggle }: MiniMapHeaderProps) {
   const { zoomIn, zoomOut } = useReactFlow();
   const { zoom } = useViewport();
 
   return (
     <Panel
       position="bottom-right"
-      className="minimap-zoom-panel"
-      style={{ marginRight: 68, marginBottom: 108 }}
+      className={`minimap-header${
+        isMiniMapVisible ? "" : " minimap-header--closed"
+      }`}
+      style={
+        isMiniMapVisible
+          ? { width: 160, marginRight: 12, marginBottom: 112 }
+          : { width: 32, marginRight: 12, marginBottom: 12 }
+      }
     >
+      {isMiniMapVisible && (
+        <div className="minimap-zoom-controls">
+          <button
+            type="button"
+            className="minimap-zoom-button"
+            onClick={() => zoomOut({ duration: 200 })}
+            aria-label="Zoom out"
+            title="Zoom out"
+          >
+            <ZoomOut aria-hidden="true" />
+          </button>
+          <span className="minimap-zoom-percentage">
+            {Math.round(zoom * 100)}%
+          </span>
+          <button
+            type="button"
+            className="minimap-zoom-button"
+            onClick={() => zoomIn({ duration: 200 })}
+            aria-label="Zoom in"
+            title="Zoom in"
+          >
+            <ZoomIn aria-hidden="true" />
+          </button>
+        </div>
+      )}
       <button
         type="button"
-        className="minimap-zoom-button"
-        onClick={() => zoomOut({ duration: 200 })}
-        aria-label="Zoom out"
-        title="Zoom out"
+        className={`minimap-toggle${
+          isMiniMapVisible ? " minimap-toggle--open" : ""
+        }`}
+        onClick={onToggle}
+        aria-label={isMiniMapVisible ? "Hide minimap" : "Show minimap"}
+        title={isMiniMapVisible ? "Hide minimap" : "Show minimap"}
       >
-        <ZoomOut aria-hidden="true" />
-      </button>
-      <span className="minimap-zoom-percentage">{Math.round(zoom * 100)}%</span>
-      <button
-        type="button"
-        className="minimap-zoom-button"
-        onClick={() => zoomIn({ duration: 200 })}
-        aria-label="Zoom in"
-        title="Zoom in"
-      >
-        <ZoomIn aria-hidden="true" />
+        {isMiniMapVisible ? (
+          <ChevronDown aria-hidden="true" />
+        ) : (
+          <ChevronUp aria-hidden="true" />
+        )}
       </button>
     </Panel>
   );
@@ -71,9 +103,6 @@ export default function App() {
   const [isMiniMapVisible, setIsMiniMapVisible] = useState(true);
   const [curveType, setCurveType] = useState<EdgeCurveType>("smoothstep");
 
-  /* 
-    Retrieve the graph from backend then have degre calculate the layout.
-  */
   useEffect(() => {
     async function getGraph() {
       try {
@@ -123,6 +152,7 @@ export default function App() {
     },
     [nodes, edges],
   );
+
   const onCurveTypeChange = useCallback((nextCurveType: EdgeCurveType) => {
     setCurveType(nextCurveType);
     setEdges((currentEdges) =>
@@ -165,48 +195,25 @@ export default function App() {
             onLayout={onLayout}
           />
           {isMiniMapVisible && (
-            <>
-              <MiniMap
-                nodeStrokeWidth={3}
-                zoomable
-                pannable
-                style={{
-                  width: 180,
-                  height: 130,
-                  margin: 12,
-                  borderRadius: 6,
-                }}
-                bgColor="#4d4d4d"
-                nodeColor="#e2e9f7"
-              />
-              <MiniMapZoomControls />
-            </>
+            <MiniMap
+              nodeStrokeWidth={3}
+              zoomable
+              pannable
+              style={{
+                width: 160,
+                height: 100,
+                margin: 12,
+                borderRadius: "0 0 6px 6px",
+                boxShadow: "0 4px 10px rgba(0, 0, 0, 0.09)",
+              }}
+              bgColor="#4d4d4d"
+              nodeColor="#e2e9f7"
+            />
           )}
-          <Panel
-            position="bottom-right"
-            className="minimap-toggle-panel"
-            style={
-              isMiniMapVisible
-                ? { marginRight: 18, marginBottom: 108 }
-                : { marginRight: 12, marginBottom: 12 }
-            }
-          >
-            <button
-              type="button"
-              className={`minimap-toggle${
-                isMiniMapVisible ? " minimap-toggle--open" : ""
-              }`}
-              onClick={() => setIsMiniMapVisible((visible) => !visible)}
-              aria-label={isMiniMapVisible ? "Hide minimap" : "Show minimap"}
-              title={isMiniMapVisible ? "Hide minimap" : "Show minimap"}
-            >
-              {isMiniMapVisible ? (
-                <ChevronDown aria-hidden="true" />
-              ) : (
-                <ChevronUp aria-hidden="true" />
-              )}
-            </button>
-          </Panel>
+          <MiniMapHeader
+            isMiniMapVisible={isMiniMapVisible}
+            onToggle={() => setIsMiniMapVisible((visible) => !visible)}
+          />
 
           <Background bgColor="#272727" color="#4d4d4d" />
         </ReactFlow>

@@ -42,7 +42,7 @@
   z-index: 6;
   display: flex;
   margin: 12px;
-  padding: 4px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.09);
   border-radius: 6px;
   background: #4d4d4d;
 }
@@ -75,7 +75,7 @@
   transform: rotate(90deg);
 }
 
-.graph-toolbar__button::after {
+.graph-toolbar__button[data-tooltip]::after {
   position: absolute;
   bottom: calc(100% + 7px);
   left: 50%;
@@ -94,8 +94,8 @@
   white-space: nowrap;
 }
 
-.graph-toolbar__button:hover::after,
-.graph-toolbar__button:focus-visible::after {
+.graph-toolbar__button[data-tooltip]:hover::after,
+.graph-toolbar__button[data-tooltip]:focus-visible::after {
   opacity: 1;
 }
 
@@ -109,13 +109,12 @@
   left: 0;
   display: none;
   width: 36px;
-  padding-bottom: 6px;
-  border-radius: 6px;
+  border-radius: 6px 6px 0px 0px;
+  transform: translateY(2px);
   background: #4d4d4d;
 }
 
-.graph-toolbar__curve-control:hover .graph-toolbar__curve-menu,
-.graph-toolbar__curve-control:focus-within .graph-toolbar__curve-menu {
+.graph-toolbar__curve-control:hover .graph-toolbar__curve-menu {
   display: flex;
   flex-direction: column;
 }
@@ -136,20 +135,41 @@
   transform: translateY(-50%);
 }
 
-.minimap-toggle-panel {
+.minimap-header {
   z-index: 6;
+  display: flex;
+  height: 32px;
+  align-items: center;
+  overflow: hidden;
+  border-radius: 6px 6px 0 0;
+  background: #434343;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.09);
+  color: #fff;
+}
+
+.minimap-header--closed {
+  border-radius: 6px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.09);
+}
+
+.minimap-zoom-controls {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  align-items: center;
 }
 
 .minimap-toggle {
   display: grid;
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
   padding: 0;
   place-items: center;
   border: 0;
   border-radius: 6px;
-  background: #353535;
-  color: #fff;
+  background: #4d4d4d;
+  color: #ffffff;
   cursor: pointer;
 }
 
@@ -170,21 +190,10 @@
   height: 18px;
 }
 
-.minimap-zoom-panel {
-  z-index: 6;
-  display: flex;
-  width: 118px;
-  height: 28px;
-  align-items: center;
-  overflow: hidden;
-  border-radius: 6px;
-  color: #fff;
-}
-
 .minimap-zoom-button {
   display: grid;
   width: 32px;
-  height: 28px;
+  height: 32px;
   flex: 0 0 32px;
   padding: 0;
   place-items: center;
