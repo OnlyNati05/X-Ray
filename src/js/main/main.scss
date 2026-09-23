@@ -1,6 +1,7 @@
 @use "../variables.scss" as *;
 
 .custom-graph-node {
+  position: relative;
   box-sizing: border-box;
   width: 172px;
   padding: 10px 14px;
@@ -8,6 +9,29 @@
   background: #353535;
   color: #fff;
   cursor: default;
+  text-align: left;
+}
+
+.custom-graph-node__content {
+  min-width: 0;
+  padding-right: 26px;
+}
+
+.custom-graph-node__icons {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  pointer-events: none;
+}
+
+.custom-graph-node__icons img {
+  display: block;
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
 }
 
 .custom-graph-node__name {
@@ -19,8 +43,49 @@
 
 .custom-graph-node__type {
   margin-top: 3px;
-  color: #bdbdbd;
+  color: #edecec;
   font-size: 0.85em;
+}
+
+.custom-graph-node__effects {
+  margin-top: 5px;
+  font-size: 0.8em;
+}
+
+.custom-graph-node__effects h3 {
+  margin: 12px 0 7px;
+  font-size: 1em;
+  font-weight: 600;
+}
+
+.custom-graph-node__effects ul {
+  margin: 0;
+  padding-left: 14px;
+  list-style: disc;
+}
+
+.custom-graph-node__effects li {
+  overflow: hidden;
+  margin-top: 3px;
+  color: #f4f4f4;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.custom-graph-node__effects-toggle {
+  margin-top: 6px;
+  padding: 2px 2px;
+  border: 0;
+  background: transparent;
+  color: #ffffff;
+  cursor: pointer;
+  font: inherit;
+  text-decoration: underline;
+}
+
+.custom-graph-node__effects-toggle:hover,
+.custom-graph-node__effects-toggle:focus-visible {
+  color: #d7d7d7;
 }
 
 .custom-graph-node .react-flow__handle {

@@ -8,6 +8,8 @@ export interface GraphNode {
   data: {
     label: string;
     type: string;
+    depth: number;
+    effects: string[];
   };
 }
 export interface GraphEdge {

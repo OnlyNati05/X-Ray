@@ -5,12 +5,13 @@
 
 import { debug } from "../../utils/debugMessage";
 import { getRootComps } from "./getRootComps";
-import { createNode, getLayerType } from "../utils/createNode";
+import { createNode } from "../utils/createNode";
 import { GraphEdge, GraphNode } from "../../../shared/types";
 import createEdge from "../utils/createEdge";
 
 type QueueEntry = {
   comp: CompItem;
+  depth: number;
   graphNodeId: string;
 };
 
@@ -26,11 +27,12 @@ export const buildGraph = () => {
   const queue: QueueEntry[] = [];
 
   for (let i = 0; i < roots.length; i++) {
-    const rootNode = createNode(roots[i]);
+    const rootNode = createNode(roots[i], 1);
 
     nodes.push(rootNode);
     queue.push({
       comp: roots[i],
+      depth: 1,
       graphNodeId: rootNode.id,
     });
   }
@@ -40,7 +42,7 @@ export const buildGraph = () => {
 
     for (let i = 1; i <= current.comp.numLayers; i++) {
       const layer = current.comp.layer(i);
-      const childNode = createNode(layer);
+      const childNode = createNode(layer, current.depth + 1);
 
       nodes.push(childNode);
       edges.push(createEdge(current.graphNodeId, childNode.id));
@@ -48,6 +50,7 @@ export const buildGraph = () => {
       if (layer instanceof AVLayer && layer.source instanceof CompItem) {
         queue.push({
           comp: layer.source,
+          depth: current.depth + 1,
           graphNodeId: childNode.id,
         });
       }
