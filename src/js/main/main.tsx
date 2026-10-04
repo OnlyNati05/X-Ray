@@ -102,8 +102,7 @@ export default function App() {
   const [error, setError] = useState<boolean>(false);
   const [isMiniMapVisible, setIsMiniMapVisible] = useState(true);
   const [curveType, setCurveType] = useState<EdgeCurveType>("smoothstep");
-  const [layoutDirection, setLayoutDirection] =
-    useState<LayoutDirection>("TB");
+  const [layoutDirection, setLayoutDirection] = useState<LayoutDirection>("TB");
   const [selectedEffects, setSelectedEffects] = useState<string[]>([]);
 
   useEffect(() => {
@@ -172,8 +171,9 @@ export default function App() {
   useEffect(() => {
     if (!hasGraph || nodes.length === 0) return;
 
-    setNodes((currentNodes) =>
-      calculateLayout(currentNodes, edges, layoutDirection).nodes,
+    setNodes(
+      (currentNodes) =>
+        calculateLayout(currentNodes, edges, layoutDirection).nodes,
     );
   }, [nodeDimensions, edgeTopology, hasGraph, layoutDirection, setNodes]);
 
@@ -188,7 +188,8 @@ export default function App() {
   }, []);
 
   const areEffectsVisible = nodes.some(
-    (node) => node.data.effects.length > 0 && node.data.effectsVisible !== false,
+    (node) =>
+      node.data.effects.length > 0 && node.data.effectsVisible !== false,
   );
 
   const onToggleEffects = useCallback(() => {
@@ -311,7 +312,8 @@ export default function App() {
           <Background bgColor="#272727" color="#4d4d4d" />
         </ReactFlow>
       ) : (
-        <h1>Please click on an layer in your timeline before opening X-Ray</h1>
+        <></>
+        // <h1>Please click on an layer in your timeline before opening X-Ray</h1>
       )}
     </div>
   );
