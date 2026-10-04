@@ -3,6 +3,7 @@ import {
   Handle,
   Position,
   useReactFlow,
+  type Edge,
   type Node,
   type NodeProps,
 } from "@xyflow/react";
@@ -14,6 +15,47 @@ import layerIcon from "../assets/layer.png";
 import videoIcon from "../assets/video.png";
 
 type CustomGraphNodeType = Node<GraphNode["data"]>;
+
+function findAncestorCompositionIds(
+  startNodeId: string,
+  nodes: CustomGraphNodeType[],
+  edges: Edge[],
+) {
+  const nodesById = new Map(nodes.map((node) => [node.id, node]));
+  const parentIdsByChildId = new Map<string, string[]>();
+
+  edges.forEach((edge) => {
+    const parentIds = parentIdsByChildId.get(edge.target) ?? [];
+    parentIds.push(edge.source);
+    parentIdsByChildId.set(edge.target, parentIds);
+  });
+
+  const compositionIds = new Set<string>();
+  const visited = new Set<string>([startNodeId]);
+  const pending = [startNodeId];
+
+  while (pending.length > 0) {
+    const currentNodeId = pending.pop()!;
+    const parentIds = parentIdsByChildId.get(currentNodeId) ?? [];
+
+    parentIds.forEach((parentId) => {
+      if (visited.has(parentId)) return;
+
+      visited.add(parentId);
+      pending.push(parentId);
+
+      const parentNode = nodesById.get(parentId);
+      if (
+        parentNode?.data.type === "Composition" ||
+        parentNode?.data.type === "Precomp"
+      ) {
+        compositionIds.add(parentId);
+      }
+    });
+  }
+
+  return compositionIds;
+}
 
 function getNodeInfo(type: string) {
   if (type === "Precomp" || type === "Composition") {
@@ -33,7 +75,7 @@ export default function CustomGraphNode({
   sourcePosition = Position.Bottom,
   targetPosition = Position.Top,
 }: NodeProps<CustomGraphNodeType>) {
-  const { setNodes } = useReactFlow<CustomGraphNodeType>();
+  const { getEdges, setNodes } = useReactFlow<CustomGraphNodeType>();
   const [showAllEffects, setShowAllEffects] = useState(false);
   const nodeInfo = getNodeInfo(data.type);
   const effectsVisible = data.effectsVisible !== false;
@@ -44,14 +86,17 @@ export default function CustomGraphNode({
 
   return (
     <div
-      className="custom-graph-node"
+      className={`custom-graph-node${
+        data.blastRadiusHighlighted
+          ? " custom-graph-node--blast-highlighted"
+          : ""
+      }`}
+      data-node-name={data.label}
       style={{ backgroundColor: nodeInfo.color }}
     >
       <Handle type="target" position={targetPosition} />
       <div className="custom-graph-node__content">
-        <div className="custom-graph-node__name" title={data.label}>
-          {data.label}
-        </div>
+        <div className="custom-graph-node__name">{data.label}</div>
         <div className="custom-graph-node__type">{data.type}</div>
         <div className="custom-graph-node__type">Depth: {data.depth}</div>
         {effectsVisible && visibleEffects.length > 0 && (
@@ -112,11 +157,37 @@ export default function CustomGraphNode({
         >
           <img src={fxIcon} alt="" />
         </button>
-        <img
-          className="custom-graph-node__blast-icon"
-          src={blastRadiusIcon}
-          alt=""
-        />
+        <button
+          type="button"
+          className={`custom-graph-node__icon-button custom-graph-node__blast-button nodrag nopan`}
+          aria-label={
+            data.blastRadiusSource ? "Clear blast radius" : "Show blast radius"
+          }
+          aria-pressed={data.blastRadiusSource === true}
+          onClick={(event) => {
+            event.stopPropagation();
+            const shouldClear = data.blastRadiusSource === true;
+            const edges = getEdges();
+
+            setNodes((currentNodes) => {
+              const compositionIds = shouldClear
+                ? new Set<string>()
+                : findAncestorCompositionIds(id, currentNodes, edges);
+
+              return currentNodes.map((node) => ({
+                ...node,
+                data: {
+                  ...node.data,
+                  blastRadiusHighlighted: compositionIds.has(node.id),
+                  blastRadiusSource: !shouldClear && node.id === id,
+                },
+              }));
+            });
+          }}
+          onPointerDown={(event) => event.stopPropagation()}
+        >
+          <img src={blastRadiusIcon} alt="" />
+        </button>
       </div>
       <Handle type="source" position={sourcePosition} />
     </div>

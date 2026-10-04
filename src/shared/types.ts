@@ -18,6 +18,8 @@ export interface GraphNode {
     depth: number;
     effects: string[];
     effectsVisible?: boolean;
+    blastRadiusHighlighted?: boolean;
+    blastRadiusSource?: boolean;
   };
 }
 export interface GraphEdge {
