@@ -5,16 +5,24 @@ import {
   Network,
   Scan,
   Spline,
+  Funnel,
   type LucideIcon,
 } from "lucide-react";
 import type { LayoutDirection } from "../utils/calculateLayout";
+import fxIcon from "../assets/fx-sign-white.png";
 
 export type EdgeCurveType = "default" | "straight" | "smoothstep";
 
 type LayoutControlsProps = {
   curveType: EdgeCurveType;
+  effectOptions: string[];
+  effectsVisible: boolean;
   onCurveTypeChange: (curveType: EdgeCurveType) => void;
+  onEffectFilterToggle: (effect: string) => void;
   onLayout: (direction: LayoutDirection) => void;
+  onClearEffectFilters: () => void;
+  onToggleEffects: () => void;
+  selectedEffects: string[];
 };
 
 const curveOptions: Array<{
@@ -39,8 +47,14 @@ const curveIcons: Record<EdgeCurveType, LucideIcon> = {
 
 export function LayoutControls({
   curveType,
+  effectOptions,
+  effectsVisible,
   onCurveTypeChange,
+  onEffectFilterToggle,
   onLayout,
+  onClearEffectFilters,
+  onToggleEffects,
+  selectedEffects,
 }: LayoutControlsProps) {
   const { fitView } = useReactFlow();
   const ActiveCurveIcon = curveIcons[curveType];
@@ -73,6 +87,17 @@ export function LayoutControls({
         data-tooltip="Center"
       >
         <Scan aria-hidden="true" />
+      </button>
+
+      <button
+        type="button"
+        className="graph-toolbar__button graph-toolbar__effects-button"
+        onClick={onToggleEffects}
+        aria-label={effectsVisible ? "Hide all effects" : "Show all effects"}
+        aria-pressed={effectsVisible}
+        data-tooltip={effectsVisible ? "Hide Effects" : "Show Effects"}
+      >
+        <img src={fxIcon} alt="" />
       </button>
 
       <button
@@ -124,6 +149,60 @@ export function LayoutControls({
           aria-label="Curve type"
         >
           <ActiveCurveIcon aria-hidden="true" />
+        </button>
+      </div>
+
+      <div className="graph-toolbar__filter-control">
+        <div className="graph-toolbar__filter-menu">
+          <div className="graph-toolbar__filter-title">Filter by effect</div>
+          <div className="graph-toolbar__filter-options">
+            {effectOptions.length > 0 ? (
+              effectOptions.map((effect) => {
+                const isSelected = selectedEffects.includes(effect);
+
+                return (
+                  <button
+                    key={effect}
+                    type="button"
+                    className={`graph-toolbar__filter-option${
+                      isSelected
+                        ? " graph-toolbar__filter-option--selected"
+                        : ""
+                    }`}
+                    onClick={() => onEffectFilterToggle(effect)}
+                    aria-pressed={isSelected}
+                    title={effect}
+                  >
+                    {effect}
+                  </button>
+                );
+              })
+            ) : (
+              <div className="graph-toolbar__filter-empty">No effects found</div>
+            )}
+          </div>
+          <button
+            type="button"
+            className="graph-toolbar__filter-clear"
+            onClick={onClearEffectFilters}
+            disabled={selectedEffects.length === 0}
+          >
+            Clear filters
+          </button>
+        </div>
+
+        <button
+          type="button"
+          className="graph-toolbar__button graph-toolbar__filter-button"
+          aria-label="Filter nodes by effect"
+          aria-pressed={selectedEffects.length > 0}
+        >
+          <Funnel aria-hidden="true" />
+          {selectedEffects.length > 0 && (
+            <span className="graph-toolbar__filter-count">
+              {selectedEffects.length}
+            </span>
+          )}
         </button>
       </div>
     </Panel>

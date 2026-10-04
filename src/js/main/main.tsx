@@ -1,5 +1,5 @@
 import "./main.scss";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import {
   Background,
   ReactFlow,
@@ -102,6 +102,9 @@ export default function App() {
   const [error, setError] = useState<boolean>(false);
   const [isMiniMapVisible, setIsMiniMapVisible] = useState(true);
   const [curveType, setCurveType] = useState<EdgeCurveType>("smoothstep");
+  const [layoutDirection, setLayoutDirection] =
+    useState<LayoutDirection>("TB");
+  const [selectedEffects, setSelectedEffects] = useState<string[]>([]);
 
   useEffect(() => {
     async function getGraph() {
@@ -141,6 +144,7 @@ export default function App() {
   );
   const onLayout = useCallback(
     (direction: LayoutDirection) => {
+      setLayoutDirection(direction);
       const { nodes: layoutedNodes, edges: layoutedEdges } = calculateLayout(
         nodes,
         edges,
@@ -153,6 +157,26 @@ export default function App() {
     [nodes, edges],
   );
 
+  const nodeDimensions = nodes
+    .map(
+      (node) =>
+        `${node.id}:${node.measured?.width ?? node.width ?? 0}x${
+          node.measured?.height ?? node.height ?? 0
+        }`,
+    )
+    .join("|");
+  const edgeTopology = edges
+    .map((edge) => `${edge.source}->${edge.target}`)
+    .join("|");
+
+  useEffect(() => {
+    if (!hasGraph || nodes.length === 0) return;
+
+    setNodes((currentNodes) =>
+      calculateLayout(currentNodes, edges, layoutDirection).nodes,
+    );
+  }, [nodeDimensions, edgeTopology, hasGraph, layoutDirection, setNodes]);
+
   const onCurveTypeChange = useCallback((nextCurveType: EdgeCurveType) => {
     setCurveType(nextCurveType);
     setEdges((currentEdges) =>
@@ -163,14 +187,77 @@ export default function App() {
     );
   }, []);
 
+  const areEffectsVisible = nodes.some(
+    (node) => node.data.effects.length > 0 && node.data.effectsVisible !== false,
+  );
+
+  const onToggleEffects = useCallback(() => {
+    const effectsVisible = !areEffectsVisible;
+
+    setNodes((currentNodes) =>
+      currentNodes.map((node) => ({
+        ...node,
+        data: {
+          ...node.data,
+          effectsVisible,
+        },
+      })),
+    );
+  }, [areEffectsVisible, setNodes]);
+
+  const effectOptions = useMemo(() => {
+    const effects = new Set<string>();
+
+    nodes.forEach((node) => {
+      node.data.effects.forEach((effect) => effects.add(effect));
+    });
+
+    return Array.from(effects).sort((first, second) =>
+      first.localeCompare(second),
+    );
+  }, [nodes]);
+
+  const onEffectFilterToggle = useCallback((effect: string) => {
+    setSelectedEffects((currentEffects) =>
+      currentEffects.includes(effect)
+        ? currentEffects.filter((currentEffect) => currentEffect !== effect)
+        : [...currentEffects, effect],
+    );
+  }, []);
+
+  const filteredNodes = useMemo(() => {
+    if (selectedEffects.length === 0) return nodes;
+
+    return nodes.map((node) => ({
+      ...node,
+      hidden: !selectedEffects.some((effect) =>
+        node.data.effects.includes(effect),
+      ),
+    }));
+  }, [nodes, selectedEffects]);
+
+  const filteredEdges = useMemo(() => {
+    if (selectedEffects.length === 0) return edges;
+
+    const visibleNodeIds = new Set(
+      filteredNodes.filter((node) => !node.hidden).map((node) => node.id),
+    );
+
+    return edges.map((edge) => ({
+      ...edge,
+      hidden:
+        !visibleNodeIds.has(edge.source) || !visibleNodeIds.has(edge.target),
+    }));
+  }, [edges, filteredNodes, selectedEffects]);
+
   return (
     <div style={{ width: "100vw", height: "100vh" }} className="app">
       {error ? (
         <h1>An error occured</h1>
       ) : hasGraph ? (
         <ReactFlow
-          nodes={nodes}
-          edges={edges}
+          nodes={filteredNodes}
+          edges={filteredEdges}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
@@ -191,8 +278,14 @@ export default function App() {
         >
           <LayoutControls
             curveType={curveType}
+            effectOptions={effectOptions}
+            effectsVisible={areEffectsVisible}
             onCurveTypeChange={onCurveTypeChange}
+            onEffectFilterToggle={onEffectFilterToggle}
             onLayout={onLayout}
+            onClearEffectFilters={() => setSelectedEffects([])}
+            onToggleEffects={onToggleEffects}
+            selectedEffects={selectedEffects}
           />
           {isMiniMapVisible && (
             <MiniMap

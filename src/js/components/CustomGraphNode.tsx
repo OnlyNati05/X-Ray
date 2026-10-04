@@ -1,9 +1,15 @@
 import { useState } from "react";
-import { Handle, Position, type Node, type NodeProps } from "@xyflow/react";
+import {
+  Handle,
+  Position,
+  useReactFlow,
+  type Node,
+  type NodeProps,
+} from "@xyflow/react";
 import type { GraphNode } from "../../shared/types";
 import blastRadiusIcon from "../assets/blast-radius.png";
 import compositionIcon from "../assets/composition.png";
-import fxIcon from "../assets/fx-sign.png";
+import fxIcon from "../assets/fx-sign-white.png";
 import layerIcon from "../assets/layer.png";
 import videoIcon from "../assets/video.png";
 
@@ -22,12 +28,15 @@ function getNodeInfo(type: string) {
 }
 
 export default function CustomGraphNode({
+  id,
   data,
   sourcePosition = Position.Bottom,
   targetPosition = Position.Top,
 }: NodeProps<CustomGraphNodeType>) {
+  const { setNodes } = useReactFlow<CustomGraphNodeType>();
   const [showAllEffects, setShowAllEffects] = useState(false);
   const nodeInfo = getNodeInfo(data.type);
+  const effectsVisible = data.effectsVisible !== false;
   const hasMoreEffects = data.effects.length > 3;
   const visibleEffects = showAllEffects
     ? data.effects
@@ -45,7 +54,7 @@ export default function CustomGraphNode({
         </div>
         <div className="custom-graph-node__type">{data.type}</div>
         <div className="custom-graph-node__type">Depth: {data.depth}</div>
-        {visibleEffects.length > 0 && (
+        {effectsVisible && visibleEffects.length > 0 && (
           <div className="custom-graph-node__effects">
             <h3>Effects: </h3>
             <ul>
@@ -72,10 +81,42 @@ export default function CustomGraphNode({
           </div>
         )}
       </div>
-      <div className="custom-graph-node__icons" aria-hidden="true">
+      <div className="custom-graph-node__icons">
         <img src={nodeInfo.image} alt="" />
-        <img src={fxIcon} alt="" />
-        <img src={blastRadiusIcon} alt="" />
+        <button
+          type="button"
+          className={`custom-graph-node__icon-button nodrag nopan${
+            effectsVisible
+              ? ""
+              : " custom-graph-node__icon-button--effects-hidden"
+          }`}
+          aria-label={effectsVisible ? "Hide effects" : "Show effects"}
+          aria-pressed={effectsVisible}
+          onClick={(event) => {
+            event.stopPropagation();
+            setNodes((currentNodes) =>
+              currentNodes.map((node) =>
+                node.id === id
+                  ? {
+                      ...node,
+                      data: {
+                        ...node.data,
+                        effectsVisible: !effectsVisible,
+                      },
+                    }
+                  : node,
+              ),
+            );
+          }}
+          onPointerDown={(event) => event.stopPropagation()}
+        >
+          <img src={fxIcon} alt="" />
+        </button>
+        <img
+          className="custom-graph-node__blast-icon"
+          src={blastRadiusIcon}
+          alt=""
+        />
       </div>
       <Handle type="source" position={sourcePosition} />
     </div>

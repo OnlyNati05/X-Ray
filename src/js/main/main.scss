@@ -34,6 +34,37 @@
   object-fit: contain;
 }
 
+.custom-graph-node__icon-button {
+  display: grid;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.custom-graph-node__icon-button:hover,
+.custom-graph-node__icon-button:focus-visible {
+  background: transparent;
+}
+
+.custom-graph-node__icon-button:hover img,
+.custom-graph-node__icon-button:focus-visible img {
+  filter: brightness(0.75);
+}
+
+.custom-graph-node__blast-icon {
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.custom-graph-node__blast-icon:hover {
+  filter: brightness(0.75);
+}
+
 .custom-graph-node__name {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -60,7 +91,7 @@
 
 .custom-graph-node__effects ul {
   margin: 0;
-  padding-left: 14px;
+  padding-left: 10px;
   list-style: disc;
 }
 
@@ -79,13 +110,14 @@
   background: transparent;
   color: #ffffff;
   cursor: pointer;
-  font: inherit;
   text-decoration: underline;
+  font: inherit;
 }
 
 .custom-graph-node__effects-toggle:hover,
 .custom-graph-node__effects-toggle:focus-visible {
-  color: #d7d7d7;
+  background-color: #49494900;
+  color: rgb(221, 221, 221);
 }
 
 .custom-graph-node .react-flow__handle {
@@ -131,9 +163,21 @@
   background: #454545;
 }
 
-.graph-toolbar__button svg {
+.graph-toolbar__button svg,
+.graph-toolbar__button img {
   width: 19px;
   height: 19px;
+}
+
+.graph-toolbar__effects-button:hover img,
+.graph-toolbar__effects-button:focus-visible img,
+.graph-toolbar__effects-button--effects-hidden img {
+  filter: brightness(0.75);
+}
+
+.graph-toolbar__effects-button--effects-hidden:hover img,
+.graph-toolbar__effects-button--effects-hidden:focus-visible img {
+  filter: brightness(1);
 }
 
 .graph-toolbar__horizontal-icon {
@@ -166,6 +210,116 @@
 
 .graph-toolbar__curve-control {
   position: relative;
+}
+
+.graph-toolbar__filter-control {
+  position: relative;
+}
+
+.graph-toolbar__filter-menu {
+  position: absolute;
+  right: 0;
+  bottom: 100%;
+  display: none;
+  width: 190px;
+  overflow: hidden;
+  border-radius: 6px 6px 0 0;
+  background: #4d4d4d;
+  box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.18);
+  color: #ffffff;
+  text-align: left;
+}
+
+.graph-toolbar__filter-control:hover .graph-toolbar__filter-menu,
+.graph-toolbar__filter-control:focus-within .graph-toolbar__filter-menu {
+  display: flex;
+  flex-direction: column;
+}
+
+.graph-toolbar__filter-title {
+  padding: 9px 10px 7px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.graph-toolbar__filter-options {
+  max-height: 210px;
+  overflow-y: auto;
+  padding: 2px 5px;
+}
+
+.graph-toolbar__filter-option {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  padding: 6px 7px;
+  border-radius: 4px;
+  background: transparent;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 11px;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.graph-toolbar__filter-option:hover,
+.graph-toolbar__filter-option:focus-visible {
+  background: #454545;
+}
+
+.graph-toolbar__filter-option--selected,
+.graph-toolbar__filter-option--selected:hover,
+.graph-toolbar__filter-option--selected:focus-visible {
+  background: #666666;
+}
+
+.graph-toolbar__filter-empty {
+  padding: 8px 7px 10px;
+  color: #bdbdbd;
+  font-size: 11px;
+}
+
+.graph-toolbar__filter-clear {
+  margin: 5px;
+  padding: 6px 7px;
+  border: 0;
+  border-top: 1px solid #626262;
+  border-radius: 3px;
+  background: transparent;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.graph-toolbar__filter-clear:hover,
+.graph-toolbar__filter-clear:focus-visible {
+  background: #454545;
+}
+
+.graph-toolbar__filter-clear:disabled {
+  color: #929292;
+  cursor: default;
+}
+
+.graph-toolbar__filter-clear:disabled:hover {
+  background: transparent;
+}
+
+.graph-toolbar__filter-count {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  display: grid;
+  min-width: 13px;
+  height: 13px;
+  padding: 0 2px;
+  place-items: center;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #333333;
+  font-size: 9px;
+  line-height: 1;
 }
 
 .graph-toolbar__curve-menu {

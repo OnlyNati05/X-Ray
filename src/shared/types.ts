@@ -5,11 +5,19 @@ export interface GraphNode {
     y: number;
   };
   deletable: boolean;
+  width?: number;
+  height?: number;
+  measured?: {
+    width?: number;
+    height?: number;
+  };
+  hidden?: boolean;
   data: {
     label: string;
     type: string;
     depth: number;
     effects: string[];
+    effectsVisible?: boolean;
   };
 }
 export interface GraphEdge {
