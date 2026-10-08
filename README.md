@@ -6,7 +6,14 @@
   A graph-based project explorer for Adobe After Effects.
 </p>
 
-<p align="center">
+<div align="center">
+
+[![Releases](https://img.shields.io/badge/Download-2EA44F?logo=github&logoColor=white)](https://github.com/OnlyNati05/X-Ray/releases)
+[![Demo](https://img.shields.io/badge/Demo_Video-FF0000?logo=youtube&logoColor=white)](https://www.youtube.com/)
+[![License](https://img.shields.io/badge/License-MIT-blue)](LICENSE)
+
+</div>
+<!-- <div align="center">
   <a href="https://github.com/OnlyNati05/X-Ray/releases">
     <img src="https://img.shields.io/badge/Download-2EA44F?logo=github&logoColor=white" alt="Download X-Ray">
   </a>
@@ -16,7 +23,7 @@
     <a href="LICENSE">
     <img src="https://img.shields.io/badge/License-MIT-blue" alt="MIT License">
   </a>
-</p>
+</div> -->
 
 <p align="center">
   <img src="docs/assets/xray_visual.png" alt="X-Ray visual">
