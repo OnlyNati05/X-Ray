@@ -13,17 +13,6 @@
 [![License](https://img.shields.io/badge/License-MIT-blue)](LICENSE)
 
 </div>
-<!-- <div align="center">
-  <a href="https://github.com/OnlyNati05/X-Ray/releases">
-    <img src="https://img.shields.io/badge/Download-2EA44F?logo=github&logoColor=white" alt="Download X-Ray">
-  </a>
-  <a href="https://www.youtube.com/">
-    <img src="https://img.shields.io/badge/Demo_Video-FF0000?logo=youtube&logoColor=white" alt="Demo Video">
-  </a>
-    <a href="LICENSE">
-    <img src="https://img.shields.io/badge/License-MIT-blue" alt="MIT License">
-  </a>
-</div> -->
 
 <p align="center">
   <img src="docs/assets/xray_visual.png" alt="X-Ray visual">
@@ -87,7 +76,12 @@ supported.
 
 ### Usage
 
-This is how to use X-Ray....
+1. Open Adobe After Effects and load your project.
+2. Select a composition in your project.
+3. Navigate to **Window → Extensions → X-Ray** to open the panel.
+4. Explore the flowchart to inspect nested compositions, footage, effects, and layer depth.
+
+For a full demonstration, watch the [Demo Video](https://www.youtube.com/).
 
 ## Tech Stack
 
