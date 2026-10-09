@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/xray_logo.png" alt="X-Ray logo">
+  <img src="docs/assets/xray_logo.png" alt="X-Ray logo" width="600">
 </p>
 
 <p align="center">
@@ -26,6 +26,7 @@
   - [Installation](#installation)
   - [Usage](#usage)
 - [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
 - [Current Limitations](#current-limitations)
 - [Found a Bug?](#found-a-bug)
 
@@ -96,6 +97,36 @@ For a full demonstration, watch the [Demo Video](https://www.youtube.com/).
 | Dagre                        | Calculates automatic vertical and horizontal graph layouts                               |
 | Vite                         | Bundles the CEP frontend and development environment                                     |
 | Sass                         | Styles graph nodes, controls, menus, and the panel interface                             |
+
+## Project Structure
+
+```text
+X-Ray/
+├── .github/workflows/       # Automated release builds
+├── docs/                    # Documentation and assets
+├── src/
+│   ├── js/                  # React frontend (CEP panel)
+│   │   ├── components/
+│   │   ├── lib/
+│   │   ├── main/
+│   │   └── utils/
+│   ├── jsx/                 # ExtendScript backend (After Effects)
+│   │   ├── aeft/
+│   │   └── index.ts
+│   └── shared/              # Shared TypeScript types
+├── cep.config.ts            # CEP configuration
+├── vite.config.ts           # Frontend build configuration
+├── vite.es.config.ts        # ExtendScript build configuration
+└── package.json
+```
+
+The After Effects side discovers the active composition network and constructs
+the graph under `src/jsx/aeft`. Bolt's `evalTS()` bridge sends that graph to the
+React frontend, where React Flow renders it and Dagre calculates its layout.
+Shared graph interfaces in `src/shared` keep both sides type-safe.
+
+The generated extension is written to `dist/cep`. Build output and the generated
+CSXS manifest should not be edited manually.
 
 ## Current Limitations
 
