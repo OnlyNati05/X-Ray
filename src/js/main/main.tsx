@@ -101,7 +101,7 @@ export default function App() {
   const [hasGraph, setHasGraph] = useState(false);
   const [error, setError] = useState<boolean>(false);
   const [isMiniMapVisible, setIsMiniMapVisible] = useState(true);
-  const [curveType, setCurveType] = useState<EdgeCurveType>("smoothstep");
+  const [curveType, setCurveType] = useState<EdgeCurveType>("default");
   const [layoutDirection, setLayoutDirection] = useState<LayoutDirection>("TB");
   const [selectedEffects, setSelectedEffects] = useState<string[]>([]);
 
@@ -263,7 +263,7 @@ export default function App() {
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
           nodeTypes={nodeTypes}
-          connectionLineType={ConnectionLineType.SmoothStep}
+          connectionLineType={ConnectionLineType.Bezier}
           proOptions={{ hideAttribution: true }}
           fitView
           colorMode="system"

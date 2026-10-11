@@ -50,9 +50,9 @@ dependency analysis:
 | Effect filtering         | Filter the graph by one or more applied effects                   | No effect-based node filtering workflow                                      |
 | Blast Radius             | Trace the ancestor compositions that depend on a selected node    | No dedicated dependency-impact view                                          |
 
-| After Effects Flowchart                                                 | X-Ray                                            |
-| ----------------------------------------------------------------------- | ------------------------------------------------ |
-| ![After Effects Flowchart visual](docs/assets/flowchart_comparison.png) | ![X-Ray visual](docs/assets/xray_comparison.png) |
+| X-Ray                                            | After Effects Flowchart                                                 |
+| ------------------------------------------------ | ----------------------------------------------------------------------- |
+| ![X-Ray visual](docs/assets/xray_comparison.png) | ![After Effects Flowchart visual](docs/assets/flowchart_comparison.png) |
 
 ## Getting Started
 
