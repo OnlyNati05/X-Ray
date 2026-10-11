@@ -9,7 +9,7 @@
 <div align="center">
 
 [![Releases](https://img.shields.io/badge/Download-2EA44F?logo=github&logoColor=white)](https://github.com/OnlyNati05/X-Ray/releases)
-[![Demo](https://img.shields.io/badge/Demo_Video-FF0000?logo=youtube&logoColor=white)](https://www.youtube.com/)
+[![Demo](https://img.shields.io/badge/Demo_Video-FF0000?logo=youtube&logoColor=white)](https://www.youtube.com/watch?v=-5BqoSxddzk)
 [![License](https://img.shields.io/badge/License-MIT-blue)](LICENSE)
 
 </div>
@@ -82,7 +82,7 @@ supported.
 3. Navigate to **Window → Extensions → X-Ray** to open the panel.
 4. Explore the flowchart to inspect nested compositions, footage, effects, and layer depth.
 
-For a full demonstration, watch the [Demo Video](https://www.youtube.com/).
+For a full demonstration, watch the [Demo Video](https://www.youtube.com/watch?v=-5BqoSxddzk).
 
 ## Tech Stack
 
